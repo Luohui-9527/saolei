@@ -1,0 +1,9 @@
+Spring:
+  datasource:
+    url: jdbc:mysql://140.143.10.22:3306/saolei?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password:
+
+server:
+  port: 8081
+
