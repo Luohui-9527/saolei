@@ -30,7 +30,9 @@ public interface GradeRankingMapper {
     List<Map<String,Object>> getNewPersonalData(@Param("createtime") String createtime, @Param("usetime") String usetime, @Param("name") String name, @Param("phone") String phone, @Param("type") String type);//根据需求查询个人成绩
 
     @Select("<script>" +
-            "SELECT a.name,b.type,b.usetime,b.createtime FROM user a,score b WHERE a.phone=b.uid AND 1=1" +
+            "SELECT a.name,b.uid,b.type,b.usetime,b.createtime " +
+            "from (score b LEFT JOIN user a on b.uid=a.phone),(SELECT uid,type,MIN(usetime) as usetime from score GROUP BY uid,type) c " +
+            "where b.uid=c.uid and b.type = c.type and b.usetime =c.usetime " +
             "<if test=\"type!=null\">" +
             "AND b.type LIKE CONCAT('%',#{type},'%')" +
             "</if>" +
@@ -47,7 +49,7 @@ public interface GradeRankingMapper {
             "</script>")
     List<Map<String,Object>> getNewAllData(@Param("createtime") String createtime, @Param("usetime") String usetime, @Param("name") String name, @Param("type") String type);//根据需求查询所有成绩成绩
 
-    @Delete("DELETE FROM score WHERE createtime = #{createtime} AND uid = #{phone}")
+    @Delete("DELETE FROM score WHERE createtime LIKE CONCAT('%',#{createtime},'%') AND uid = #{phone}")
     Integer delPersonalData(@Param("createtime") String createtime,@Param("phone") String phone);
 
 }
